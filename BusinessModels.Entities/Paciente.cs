@@ -10,5 +10,6 @@ namespace BusinessModels.Entities
         public int Peso { get; set; }
         public int Estatura { get; set; }
         public string Nacionalidad { get; set; }
+        public string HistoriaClinica { get; set; }
     }
 }

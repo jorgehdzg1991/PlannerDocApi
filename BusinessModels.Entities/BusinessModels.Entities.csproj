@@ -40,7 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Credenciales.cs" />
+    <Compile Include="Cita.cs" />
+    <Compile Include="Configuracion.cs" />
+    <Compile Include="Credencial.cs" />
+    <Compile Include="Doctor.cs" />
+    <Compile Include="FormacionAcademica.cs" />
+    <Compile Include="FotoPerfil.cs" />
+    <Compile Include="Horario.cs" />
     <Compile Include="Paciente.cs" />
     <Compile Include="Persona.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
