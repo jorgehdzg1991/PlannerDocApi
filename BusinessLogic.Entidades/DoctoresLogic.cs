@@ -122,10 +122,10 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var doctor = Db.Query<Doctor>("stp_Doctores_FindById", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var doctor = Db.QueryFirst<Doctor>("stp_Doctores_FindById", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (doctor.Count <= 0)
+                if (doctor == null)
                 {
                     result.IsError = true;
                     result.Message = "No se encontró un doctor con el Id \"" + id + "\"";
@@ -133,7 +133,7 @@ namespace BusinessLogic.Entidades
                     return result;
                 }
 
-                result.Data = doctor.FirstOrDefault();
+                result.Data = doctor;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;
@@ -332,10 +332,10 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var configuracion = Db.Query<Doctor>("stp_Doctores_FindByCredentials", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var configuracion = Db.QueryFirst<Doctor>("stp_Doctores_FindByCredentials", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (configuracion.Count <= 0)
+                if (configuracion == null)
                 {
                     result.IsError = true;
                     result.Message = "No se encontró una combinacion de credenciales que coincidiera " +
@@ -344,7 +344,7 @@ namespace BusinessLogic.Entidades
                     return result;
                 }
 
-                result.Data = configuracion.FirstOrDefault();
+                result.Data = configuracion;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;

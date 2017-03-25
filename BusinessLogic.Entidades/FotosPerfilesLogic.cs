@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using BusinessModels.Core;
 using BusinessModels.Entities;
 using Dapper;
 
 namespace BusinessLogic.Entidades
 {
-    public class ConfiguracionesLogic : IBusinessLogic<Configuracion>
+    public class FotosPerfilesLogic : IBusinessLogic<FotoPerfil>
     {
-        public ConfiguracionesLogic()
+        public FotosPerfilesLogic()
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["cnnPlannerDoc"].ToString();
         }
@@ -20,19 +23,19 @@ namespace BusinessLogic.Entidades
         public string ConnectionString { get; set; }
         public SqlConnection Db { get; set; }
 
-        public QueryResult<Configuracion> FindAll()
+        public QueryResult<FotoPerfil> FindAll()
         {
             throw new NotImplementedException();
         }
 
-        public PagedQueryResult<Configuracion> FindPaged(int pageNumber, int pageSize)
+        public PagedQueryResult<FotoPerfil> FindPaged(int pageNumber, int pageSize)
         {
             throw new NotImplementedException();
         }
 
-        public SingleQueryResult<Configuracion> FindById(int id)
+        public SingleQueryResult<FotoPerfil> FindById(int id)
         {
-            var result = new SingleQueryResult<Configuracion>();
+            var result = new SingleQueryResult<FotoPerfil>();
 
             try
             {
@@ -43,18 +46,18 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var configuracion = Db.Query<Configuracion>("stp_Configuraciones_GetById", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var doctor = Db.QueryFirst<FotoPerfil>("stp_FotosPerfiles_FindById", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (configuracion.Count <= 0)
+                if (doctor == null)
                 {
                     result.IsError = true;
-                    result.Message = "No se encontró una configuración con el Id \"" + id + "\"";
+                    result.Message = "No se encontró un foto de perfil con el Id \"" + id + "\"";
                     result.StatusCode = HttpStatusCode.NotFound;
                     return result;
                 }
 
-                result.Data = configuracion.FirstOrDefault();
+                result.Data = doctor;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;
@@ -72,42 +75,36 @@ namespace BusinessLogic.Entidades
             }
         }
 
-        public CommitInfo<Configuracion> Add(Configuracion entity)
+        public CommitInfo<FotoPerfil> Add(FotoPerfil entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public CommitInfo<Configuracion> Update(Configuracion entity)
-        {
-            var result = new CommitInfo<Configuracion>();
+            var result = new CommitInfo<FotoPerfil>();
 
             try
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("@Id", entity.Id);
-                parameters.Add("@Biografia", entity.Biografia);
-                parameters.Add("@FotosPerfilesId", entity.FotosPerfilesId);
-                parameters.Add("@PrecioCita", entity.PrecioCita);
-                parameters.Add("@DuracionCita", entity.DuracionCita);
+                parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@Url", entity.Url);
 
                 Db = new SqlConnection(ConnectionString);
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var rowsAffected = Db.Execute("stp_Configuraciones_Update", parameters,
+                var rowsAffected = Db.Execute("stp_FotosPerfiles_Create", parameters,
                     commandType: CommandType.StoredProcedure);
 
                 if (rowsAffected <= 0)
                 {
                     result.IsError = true;
-                    result.Message = "Falló la actualización del registro de configuración en base de datos";
+                    result.Message = "Falló la inserción del registro de foto de perfil en base de datos";
                     result.StatusCode = HttpStatusCode.Conflict;
                 }
                 else
                 {
+                    entity.Id = parameters.Get<int>("@Id");
+
                     result.Entity = entity;
                     result.RowsAffected = rowsAffected;
-                    result.Message = "Configuración actualizada correctamente";
+                    result.Message = "Foto de perfil creada correctamente";
                     result.StatusCode = HttpStatusCode.OK;
                 }
 
@@ -126,7 +123,12 @@ namespace BusinessLogic.Entidades
             }
         }
 
-        public CommitInfo<Configuracion> Delete(int id)
+        public CommitInfo<FotoPerfil> Update(FotoPerfil entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CommitInfo<FotoPerfil> Delete(int id)
         {
             throw new NotImplementedException();
         }

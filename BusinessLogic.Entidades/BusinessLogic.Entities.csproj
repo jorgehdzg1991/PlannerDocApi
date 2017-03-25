@@ -50,6 +50,7 @@
     <Compile Include="CredencialesLogic.cs" />
     <Compile Include="DoctoresLogic.cs" />
     <Compile Include="FormacionesAcademicasLogic.cs" />
+    <Compile Include="FotosPerfilesLogic.cs" />
     <Compile Include="PacientesLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

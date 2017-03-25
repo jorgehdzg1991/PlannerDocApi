@@ -43,10 +43,10 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var cita = Db.Query<Cita>("stp_Citas_FindById", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var cita = Db.QueryFirst<Cita>("stp_Citas_FindById", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (cita.Count <= 0)
+                if (cita == null)
                 {
                     result.IsError = true;
                     result.Message = "No se encontró una cita con el Id \"" + id + "\"";
@@ -54,7 +54,7 @@ namespace BusinessLogic.Entidades
                     return result;
                 }
 
-                result.Data = cita.FirstOrDefault();
+                result.Data = cita;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;

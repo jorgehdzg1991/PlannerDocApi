@@ -122,10 +122,10 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var paciente = Db.Query<Paciente>("stp_Pacientes_FindById", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var paciente = Db.QueryFirst<Paciente>("stp_Pacientes_FindById", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (paciente.Count <= 0)
+                if (paciente == null)
                 {
                     result.IsError = true;
                     result.Message = "No se encontró un paciente con el Id \"" + id + "\"";
@@ -133,7 +133,7 @@ namespace BusinessLogic.Entidades
                     return result;
                 }
 
-                result.Data = paciente.FirstOrDefault();
+                result.Data = paciente;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;

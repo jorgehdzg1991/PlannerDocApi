@@ -43,10 +43,10 @@ namespace BusinessLogic.Entidades
 
                 if (Db.State != ConnectionState.Open) Db.Open();
 
-                var formacion = Db.Query<FormacionAcademica>("stp_FormacionesAcademicas_FindById", parameters,
-                    commandType: CommandType.StoredProcedure).ToList();
+                var formacion = Db.QueryFirst<FormacionAcademica>("stp_FormacionesAcademicas_FindById", parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                if (formacion.Count <= 0)
+                if (formacion == null)
                 {
                     result.IsError = true;
                     result.Message = "No se encontró una formación académica con el Id \"" + id + "\"";
@@ -54,7 +54,7 @@ namespace BusinessLogic.Entidades
                     return result;
                 }
 
-                result.Data = formacion.FirstOrDefault();
+                result.Data = formacion;
                 result.StatusCode = HttpStatusCode.OK;
 
                 return result;
